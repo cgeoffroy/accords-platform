@@ -1693,12 +1693,15 @@ private	struct rest_response *	rest_consume_response_body(
 	{
 		while ( bytes )
 		{
-			if ( fwrite((cptr->buffer+cptr->consumed),(cptr->bytes - cptr->consumed),1,h) <= 0 )
+		  int size_to_write = (cptr->bytes - cptr->consumed);
+		  if ( size_to_write > 0) {
+			if ( fwrite((cptr->buffer+cptr->consumed),size_to_write,1,h) <= 0 )
 			{
 				/* TODO FAILURE */
 				break;
 			}
 			else 	bytes -= (cptr->bytes - cptr->consumed);
+		  }
 
 			if (!( bytes ))
 				break;
