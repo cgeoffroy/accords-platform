@@ -389,7 +389,7 @@ public	char *	keystone_auth_message( char * user, char * password, char * tenant
 			0x0022,0x0022,0x0022,0x0022);
 		fprintf(h,"<auth xmlns:xsi=%c%s%c xmlns=%c%s%c tenantName=%c%s%c>\n",
 				0x0022,"http://www.w3.org/2001/XMLSchema-instance",0x0022,
-				0x0022,"http://docs.openstack.com/identity/api/v2.0",0x0022,
+				0x0022,"http://docs.openstack.org/identity/api/v2.0",0x0022,
 				0x0022,tenant,0x0022);
 		fprintf(h,"<passwordCredentials username=%c%s%c password=%c%s%c/>\n",
 				0x0022,user,0x0022,0x0022,password,0x0022);
