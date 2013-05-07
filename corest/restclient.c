@@ -711,8 +711,12 @@ private	struct	rest_request *	rest_client_body( struct rest_request * rptr, char
 {
 	if (!( rptr ))
 		return( rptr );
-	else if (!( filename ))
-		return( rptr );
+	else if (!( filename )) {
+	  if (( rest_resolve_header( rptr->first, _HTTP_CONTENT_LENGTH )) == (struct rest_header *) 0) {
+	    rest_request_header(rptr,_HTTP_CONTENT_LENGTH,"0");
+	  }
+	  return( rptr );
+	}
 	else if (!( strlen( filename ) ))
 		return( rptr );
 	else if (!( rest_client_content_length( rptr, filename ) ))
