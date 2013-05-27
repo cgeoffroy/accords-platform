@@ -108,6 +108,7 @@ private	struct	os_response * os_check( struct rest_response * aptr )
 		}
 		else if ((!( strcmp( rptr->content, "text/xml" 		)))
 		     ||  (!( strcmp( rptr->content, "application/xml" 	)))
+		     ||  (!( strcmp( rptr->content, "application/xml; charset=UTF-8" )))
 		     ||  (!( strcmp( rptr->content, "x-application/xml"))))
 		{
 			rptr->nature = _TEXT_XML;
