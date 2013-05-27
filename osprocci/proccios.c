@@ -482,6 +482,13 @@ private	int	openstack_build_failure( struct openstack * pptr, int status, char *
 	return( status );
 }
 
+private int startsWith(const char *str, const char *pre)
+{
+    size_t lenpre = strlen(pre),
+           lenstr = strlen(str);
+    return lenstr < lenpre ? 0 : strncmp(pre, str, lenpre) == 0;
+}
+
 /*	--------------------------------------------------------	*/
 /* 	     c o n n e c t _ o p e n s t a c k _ s e r v e r		*/
 /*	--------------------------------------------------------	*/
@@ -521,7 +528,11 @@ private	int	connect_openstack_server(
 		if ( pptr->rootpass ) 
 			pptr->rootpass = liberate( pptr->rootpass );
 
-		if (!( vptr = json_atribut( rptr->jsonroot, "id") ))
+		struct	xml_element * eptr = rptr->xmlroot;
+		struct	xml_atribut * aptr;
+		aptr = document_atribut( eptr, "id" );
+		
+		if (!( vptr = document_atribut_string(aptr) ))
 			return( openstack_build_failure( pptr, 900, "Incorrect Json Message : Missing ID" ) );
 		else if (!( pptr->number = allocate_string(vptr)))
 			return( openstack_build_failure( pptr, 901, "Allocation Failure : ID ") );
@@ -531,7 +542,8 @@ private	int	connect_openstack_server(
 			rest_log_message("*** OS PROCCI Instance ID ***");
 			rest_log_message( pptr->number );
 		}
-		if (!( vptr = json_atribut( rptr->jsonroot, "adminPass") ))
+		aptr = document_atribut( eptr, "adminPass" );
+		if (!( vptr = document_atribut_string(aptr) ))
 			return( openstack_build_failure( pptr, 902, "Incorrect Json Message : Missing adminPass" ) );
 		else if (!( pptr->rootpass  = allocate_string(vptr)))
 			return( openstack_build_failure( pptr, 903, "Allocation Failure : adminPass" ) );
@@ -555,28 +567,46 @@ private	int	connect_openstack_server(
 		yptr = rptr;
 		while (1)
 		{
-			if (!( vptr = json_atribut( yptr->jsonroot, "status" )))
+		  printf("*** OS : querying the machine's state ***\n");
+
+		  vptr = (char *) 0;
+		  if ( yptr->xmlroot ) {
+		    aptr = document_atribut( yptr->xmlroot, "status" );
+		    vptr = document_atribut_string(aptr);
+		  } else {
+		    if ( yptr->jsonroot) {
+		      vptr = json_atribut( yptr->jsonroot, "status" );
+		    }
+		  }
+	
+		        if (!( vptr ))
 			{
 				if ( zptr ) zptr = liberate_os_response( zptr );
 				if (!( zptr = os_get_server( subptr, pptr->number )))
 					return( openstack_build_failure( pptr, 904, "OS Failure : Get Server" ) );
-				else if (!( vptr = json_atribut( zptr->jsonroot, "status" )))
+				if ( zptr->xmlroot ) {
+				  aptr = document_atribut( zptr->xmlroot, "status" );
+				  vptr = document_atribut_string(aptr);
+				} else if ( yptr->jsonroot ) {
+				  vptr = json_atribut( yptr->jsonroot, "status" );
+				}
+				
+				if (!( vptr ))
 					return( openstack_build_failure( pptr, 905, "Incorrect Json Message : Missing status" ) );
 				else	yptr = zptr;
 			}
-
 			else if (!( strcmp( vptr, "ERROR" )))
 			{
 				if ( zptr ) zptr = liberate_os_response( zptr );
 				return( openstack_build_failure( pptr, 999, "VM ERROR : Get Server" ) );
 			}
-			else if (!( strcmp( vptr, "BUILD" )))
+			else if ( startsWith(vptr, "BUILD") )
 			{
 				if ( zptr ) zptr = liberate_os_response( zptr );
 
 				if ( ++building > _OS_BUILD_WAIT )
 					return( openstack_build_failure( pptr, 906, "OS Failure : Compute Build TimeOut" ) );
-
+				printf("*** OS : sleeping to wait for the machine's state to change ***\n");
 				sleep(_OS_BUILD_SLEEP);
 
 				if (!( zptr = os_get_server( subptr, pptr->number )))
@@ -586,6 +616,7 @@ private	int	connect_openstack_server(
 			else if (!( strcmp( vptr, "ACTIVE" )))
 				break;
 
+			sleep(0); // against active wait
 		}
 
 		if ( pptr->hostname ) pptr->hostname = liberate( pptr->hostname );
@@ -1316,7 +1347,13 @@ private	struct	rest_response * start_openstack(
 		/* ----------------------- */
 		/* create server meta data */
 		/* ----------------------- */
-		if (!( idptr = json_atribut( osptr->jsonroot, "id") ))
+		if ( osptr->jsonroot ) {
+		  idptr = json_atribut( osptr->jsonroot, "id");
+		} else {
+		  idptr = document_atribut_string(document_atribut( osptr->xmlroot, "id" ));
+		}
+
+		if (!( idptr ))
 		{
 			remove_floating_address( subptr, pptr );
 			subptr = os_liberate_subscription( subptr );
