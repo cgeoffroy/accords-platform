@@ -435,14 +435,15 @@ private	void	rest_show_request( struct rest_request * rptr)
 	struct	rest_header * hptr;
 	if ( check_verbose() )
 	{
-		printf("   Rest Server Request  : %s %s %s \n",rptr->method, rptr->object, rptr->version );
+	  printf(">{rSreq}> Rest Server Request [%s:%d] : %s %s %s \n",rptr->host, rptr->port, rptr->method, rptr->object, rptr->version );
 		if ( rest_check_debug() )
 		{
 			for (	hptr=rptr->first;
 				hptr != (struct rest_header *) 0;
 				hptr = hptr->next )
 				if ( hptr->name )
-					printf("   %s: %s \n",hptr->name,hptr->value);
+					printf(">{rSreq}> %s: %s \n",hptr->name,hptr->value);
+			printf(">{rSreq}> BODY: %s\n>{rSreq}> END\n", rptr->body);
 		}
 	}
 	return;
@@ -456,14 +457,15 @@ private	void	rest_show_response( struct rest_response * aptr)
 	struct	rest_header * hptr;
 	if ( check_verbose() )
 	{
-		printf("   Rest Server Response : %s %u %s \n",aptr->version, aptr->status,aptr->message );
+		printf("<{rSres}< Rest Server Response : %s %u %s \n",aptr->version, aptr->status,aptr->message );
 		if ( rest_check_debug() )
 		{
 			for (	hptr=aptr->first;
 				hptr != (struct rest_header *) 0;
 				hptr = hptr->next )
 				if ( hptr->name )
-					printf("   %s: %s \n",hptr->name,hptr->value);
+					printf("<{rSres}< %s: %s \n",hptr->name,hptr->value);
+			printf("<{rSres}< BODY: %s\n<{rSres}< END\n", aptr->body);
 		}
 	}
 	return;

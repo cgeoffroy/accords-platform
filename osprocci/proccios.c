@@ -37,6 +37,8 @@ private	struct os_response *	stop_openstack_provisioning( struct openstack * ppt
 #define	_OS_BUILD_WAIT	60
 #define	_OS_BUILD_SLEEP	5
 
+#define _DEBUG(fmt, args...) printf("%s:%s:%d: "fmt, __FILE__, __FUNCTION__, __LINE__, args)  
+
 /* ---------------------------------------------------------------------------- */
 /* 		r e s o l v e _ o s _ c o n f i g u r a t i o n			*/
 /* ---------------------------------------------------------------------------- */
@@ -497,9 +499,13 @@ private	int	connect_openstack_server(
 		/* available at this point and cannot be retrieved by	*/
 		/* any other means so it must not be lost.		*/ 
 		/* ---------------------------------------------------- */
+	        fprintf(stderr, "DDDDGEO : nature='%d', content='%s', xmlroot='%p' ***\n", rptr->nature, rptr->content, rptr->xmlroot);
 		if ( check_debug() )
 		{
-			rest_log_message("*** OS PROCCI connect_openstack_server( entry ) ***");
+		  char * tmp;
+		  asprintf(&tmp, "*** OS PROCCI connect_openstack_server( entry ) nature='%d', content='%s'***", rptr->nature, rptr->content);
+		  rest_log_message(tmp);
+		  free(tmp);
 		}
 
 		if ( pptr->number ) 
@@ -579,6 +585,7 @@ private	int	connect_openstack_server(
 		if ( pptr->reference ) pptr->reference = liberate( pptr->reference );
 		if ( pptr->publicaddr ) pptr->publicaddr = liberate( pptr->publicaddr );
 		if ( pptr->privateaddr ) pptr->privateaddr = liberate( pptr->privateaddr );
+
 
 		/* -------------------------------------- */
 		/* retrieve and store the compute host ID */
@@ -1227,6 +1234,8 @@ private	struct	rest_response * start_openstack(
 	/* --------------------------------- */
 	if (!( status = connect_openstack_server( subptr, osptr, pptr ) ))
 	{
+
+	  _DEBUG("DGEO : connect_openstack_server ok (%d), osptr->jsonroot='%p', osptr->xmlroot='%p'\n", status, osptr->jsonroot, osptr->xmlroot);
 		/* -------------------------------------------- */
 		/* attempt to associate the floating IP address */
 		/* -------------------------------------------- */
@@ -1240,7 +1249,7 @@ private	struct	rest_response * start_openstack(
 			 	return( rest_html_response( aptr, status, "Bad Request : Associate Server Address" ) );
 			}
 		}
-
+		_DEBUG("DGEO : launch the COSACS operations (%d)\n", status);
 		/* ---------------------------- */
 		/* launch the COSACS operations */
 		/* ---------------------------- */
@@ -1253,7 +1262,7 @@ private	struct	rest_response * start_openstack(
 					reference, OsProcci.publisher, pptr->account );
 			}
 		}
-
+		_DEBUG("DGEO : release the puplic ip (%d)\n", status);
 		/* ------------------------------------- */
 		/* release the public IP if not required */
 		/* ------------------------------------- */
@@ -1293,7 +1302,7 @@ private	struct	rest_response * start_openstack(
 			}
 			remove_floating_address( subptr, pptr );
 		}
-
+		_DEBUG("DGEO : create meta data (%d)\n", status);
 		/* ----------------------- */
 		/* create server meta data */
 		/* ----------------------- */
@@ -1338,10 +1347,13 @@ private	struct	rest_response * start_openstack(
 		remove_floating_address( subptr, pptr );
 		subptr = os_liberate_subscription( subptr );
 		personality = liberate( personality );
+		_DEBUG("4256 Server Failure : Connect Open Stack : status=%d\n", status);
 		return( rest_html_response( aptr, 4256, "Server Failure : Connect Open Stack" ) );
 	}
 
 }
+
+
 
 /*	-------------------------------------------	*/
 /*		o s _ i m a g e _ n u m b e r 		*/

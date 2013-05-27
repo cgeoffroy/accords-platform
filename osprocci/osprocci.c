@@ -54,7 +54,7 @@ struct	accords_configuration OsProcci = {
 	(struct occi_category *) 0
 	};
 
-public	int	check_debug()		{	return(OsProcci.debug);		}
+public	int	check_debug()		{	return(1 /*OsProcci.debug*/);		}
 public	int	check_verbose()		{	return(OsProcci.verbose);	}
 public	char *	default_publisher()	{	return(OsProcci.publisher);	}
 public	char *	default_operator()	{	return(OsProcci.operator);	}

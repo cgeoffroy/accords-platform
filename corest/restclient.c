@@ -593,8 +593,20 @@ public	struct	rest_request * rest_send_request(
 	if (!( cptr ))	return( rptr );
 	if (!( rptr ))	return( rptr );
 
-	if ( check_verbose() )
-		printf("Rest Client Request : %s %s %s \n",rptr->method, rptr->object,rptr->version );
+	if ( check_verbose() ) {
+	  printf(">{rCreq}> Rest Client Request [%s:%d] : %s %s %s \n",rptr->host, rptr->port, rptr->method, rptr->object,rptr->version );
+	  if ( rest_check_debug() )
+	    {
+	      struct	rest_header * tmp;
+	      for (   tmp=rptr->first;
+		      tmp != (struct rest_header *) 0;
+		      tmp = tmp->next )
+		if ( tmp->name )
+		  printf(">{rCreq}> %s: %s \n",tmp->name,tmp->value);
+	      printf(">{rCreq}> BODY: %s\n>{rCreq}> END\n", rptr->body);
+	    }
+
+	}
 
 	rest_request_start( cptr );
 

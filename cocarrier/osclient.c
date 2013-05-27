@@ -150,6 +150,15 @@ public	struct	os_response *
 	struct	rest_response * rptr;
 	struct	rest_header   * copy=(struct rest_header *) 0;
 
+	fprintf(stderr, "DGEO : os_client_get_request ***\n");
+	struct	rest_header * tmp;
+	      for (   tmp=hptr;
+		      tmp != (struct rest_header *) 0;
+		      tmp = tmp->next )
+		if ( tmp->name )
+		  printf(">{?}> %s: %s \n",tmp->name,tmp->value);
+	
+
 	if (( hptr )
 	&&  (!( copy = rest_duplicate_headers( hptr ) )))
 		return((struct os_response *) 0);

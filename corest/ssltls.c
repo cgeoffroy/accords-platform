@@ -511,9 +511,25 @@ public	int	connection_name( CONNECTIONPTR cptr, char * buffer, int buflen )
 	return( strlen( buffer ) );
 }
 
+// get port, IPv4 or IPv6:                                                                                                                                                      
+in_port_t get_in_port(struct sockaddr *sa)
+{
+  if (sa->sa_family == AF_INET) {
+    return (((struct sockaddr_in*)sa)->sin_port);
+  }
+
+  return (((struct sockaddr_in6*)sa)->sin6_port);
+}
+
 public	int	connection_write( CONNECTIONPTR cptr, char * buffer, int length )
 {
-	if ( check_debug() ) printf( "connection_write(%s,%u)\n",buffer,length);
+  if ( check_debug() ) { 
+    in_port_t tmp = get_in_port(&cptr->remote);
+    printf("connection_write(");
+    printf("port is %d, ",ntohs(get_in_port(&cptr->remote)));
+    printf( "%s,%u)\n",buffer,length);
+    
+  }
 
 	cptr->outbound += length;
 
