@@ -47,7 +47,9 @@ private	struct	os_config * resolve_os_configuration( char * sptr )
 	struct	occi_kind_node * nptr;
 	struct	os_config * pptr=(struct os_config *) 0;
 	struct	occi_kind_node  * occi_first_os_config_node();
-	rest_log_message("resolve_os_configuration");
+	char *tmp;
+	asprintf(&tmp, "resolve_os_configuration '%s' (occi_first_os_config_node='%p')", sptr, occi_first_os_config_node);
+	rest_log_message(tmp);
 	rest_log_message( sptr );
 	for (	nptr = occi_first_os_config_node();
 		nptr != (struct occi_kind_node *) 0;
@@ -243,11 +245,16 @@ private	struct os_subscription * ll_use_openstack_configuration( char * sptr )
 private	struct os_subscription * use_openstack_configuration( char * nptr )
 {
 	struct	os_subscription * sptr;
-	if (( sptr = ll_use_openstack_configuration( nptr )) != (struct os_subscription *) 0)
+	if (( sptr = ll_use_openstack_configuration( nptr )) != (struct os_subscription *) 0) {
+	  printf("*** PROC - use_openstack_configuration : ok 1\n");
 		return( sptr );
-	else if (!( nptr = get_operator_profile() ))
+	} else if (!( nptr = get_operator_profile() )) {
+	  printf("*** PROC - use_openstack_configuration : no operator profile\n");
 		return( sptr );
-	else 	return( ll_use_openstack_configuration( nptr ) );
+	} else {
+	  printf("*** PROC - use_openstack_configuration : else final\n");
+	  return( ll_use_openstack_configuration( nptr ) );
+	}
 }
 
 
@@ -1145,12 +1152,15 @@ private	struct	rest_response * start_openstack(
 	else if (!( subptr = use_openstack_configuration( pptr->profile )))
 	{
 		reset_openstack_server( pptr );
-		return( rest_html_response( aptr, status, "Configuration Not Found" ) );
+		char *tmp;
+		asprintf(&tmp, "*** PROC Configuration Not Found with profile='%s'", pptr->profile);
+		return( rest_html_response( aptr, status, tmp ) );
 	}
-
+	
 	sprintf(buffer,"contract=%s/%s/%s\npublisher=%s\n",
 		OsProcci.identity,_CORDS_OPENSTACK,pptr->id,OsProcci.publisher);
-	
+	printf("*** PROC - subscription information resolved: %s\n", buffer);
+
 	if (!( personality = allocate_string(buffer) ))
 	{
 		subptr = os_liberate_subscription( subptr );

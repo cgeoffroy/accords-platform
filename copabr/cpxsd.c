@@ -67,7 +67,7 @@ public	struct	xml_element * xsd_type( struct xml_element * xsd, char * nptr )
 			continue;
 		}
 	}
-	if ( check_debug() ) { printf("xsd:failure( attribute %s )\n",nptr); }
+	if ( check_debug() ) { printf("xsd:type failure( attribute %s )\n",nptr); }
 	return( wptr );
 }
 
@@ -160,7 +160,7 @@ public	struct	xml_element * xsd_element( struct xml_element * xsd, char * nptr )
 		else 	continue;
 
 	}
-	if ( check_debug() ) { printf("xsd:failure( element %s )\n",nptr); }
+	if ( check_debug() ) { printf("xsd: element failure( element %s )\n",nptr); }
 	return((struct xml_element *) 0);
 }
 
@@ -193,7 +193,7 @@ public	struct	xml_element *	xsd_atribut( struct xml_element * xsd, char * nptr )
 		}
 		else	liberate( vptr );
 	}
-	if ( check_debug() ) { printf("xsd:failure( attribute %s )\n",nptr); }
+	if ( check_debug() ) { printf("xsd: atribut failure( attribute %s )\n",nptr); }
 	return((struct xml_element *) 0);
 }
 

@@ -8,16 +8,21 @@
 /*	-----------------------------------------------------------	*/
 private	char *	select_placement( struct occi_response * zptr )
 {
+        printf("{copsplacement : select_placement}\n");
 	struct	occi_element 	* eptr;
 	for (	eptr = zptr->first;
 		eptr != (struct occi_element*) 0;
 		eptr = eptr->next )
 	{
+	        printf("{copsplacement : select_placement} for\n");
 		if (!( eptr->name ))
 			continue;
 		else if (!( eptr->value ))
 			continue;
-		else 	return( allocate_string( eptr->value ) );
+		else {
+		  printf("{copsplacement : select_placement} result='%s'\n", eptr->value);
+		  return( allocate_string( eptr->value ) );
+		}
 	}
 	return((char *) 0);
 }
@@ -31,6 +36,7 @@ private	int	default_placement(
 		char * agent,
 		char * tls )
 {
+        printf("{copsplacement : default_placement} resolving '%s'\n", pptr->provider);
 	struct	occi_response 	* zptr;
 	if (!( zptr = occi_resolver( pptr->provider, agent ) ))
 		return( 48 );

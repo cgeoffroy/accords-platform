@@ -10,6 +10,7 @@ private	int	force_update=0;
 
 public	void	set_force(int v) { force_update = v; }
 private	int	cords_append_error( struct xml_element * dptr, int status, char * message);
+private int check_debug() { return 1; }
 
 #include "cpxsd.c"
 
@@ -2237,6 +2238,7 @@ private	int	cords_resolve_cordscript_instance(
 	struct	xml_atribut * bptr;
 	struct	occi_element * hptr=(struct occi_element *) 0;
 
+	printf("{cp.c - cords_resolve_cordscript_instance} recover the category.attribute expression\n");
 	/* ----------------------------------------- */
 	/* recover the category.attribute expression */
 	/* ----------------------------------------- */
@@ -2246,6 +2248,7 @@ private	int	cords_resolve_cordscript_instance(
 		return(0);
 	else	sprintf(buffer,"%s.%s.%s","occi",mptr, eptr->value );
 
+	printf("{cp.c - cords_resolve_cordscript_instance} recover the attribute name\n");
 	/* -------------------------- */
 	/* recover the attribute name */
 	/* -------------------------- */
@@ -2254,10 +2257,11 @@ private	int	cords_resolve_cordscript_instance(
 	else if (!( nptr = eptr->prefix ))
 		return(0);
 
+	printf("{cp.c - cords_resolve_cordscript_instance} then resolve the cascading attribute value*\n");
 	/* ------------------------------------------ */
 	/* then resolve the cascading attribute value*/
 	/* ------------------------------------------ */
-	else if (!( bptr = cords_cascading_attribute( dptr, nptr ) ))
+	/*else*/ if (!( bptr = cords_cascading_attribute( dptr, nptr ) ))
 		return(0);
 	else if (!( bptr->value ))
 		return(0);
@@ -2366,13 +2370,16 @@ private	int	cords_parser_atribut_action(
 	struct	occi_response * zptr;
 	char *	xptr;
 	int	status=0;
-
-	if (!( aptr->name ))
+	printf("cords_parser_atribut_action aptr->name='%s'\n", aptr->name);
+	if (!( aptr->name )) {
+		printf("cords_parser_atribut_action no name\n");
 		return(0);
-	else if (!(xptr = aptr->value))
+	} else if (!(xptr = aptr->value)) {
+		printf("cords_parser_atribut_action no value\n");
 		return(0);
-	else if (!( strncmp( xptr, _CORDSCRIPT_PREFIX, strlen( _CORDSCRIPT_PREFIX ) ) ))
+	} else if (!( strncmp( xptr, _CORDSCRIPT_PREFIX, strlen( _CORDSCRIPT_PREFIX ) ) ))
 	{
+		printf("cords_parser_atribut_action step over\n");
 		/* ----------------------------- */
 		/* step over leading white space */
 		/* ----------------------------- */
@@ -2384,21 +2391,26 @@ private	int	cords_parser_atribut_action(
 		{
 			 xptr++;
 		}
+		printf("cords_parser_atribut_action xptr='%s'\n", xptr);
 	}
 
 	/* ---------------------------------------------------- */
 	/* detect a "cordscript" named attribute to be consumed */
 	/* ---------------------------------------------------- */
-	else if (!( strcmp( aptr->name, "cordscript" ) ))
+	else if (!( strcmp( aptr->name, "cordscript" ) )) {
+		printf("cords_parser_atribut_action detect cordscript att\n");
 		status=1;
-	else	return( 0 );
+	} else	{
+		printf("cords_parser_atribut_action return A\n");
+		return( 0 );
+	}
 
 	/* ---------------------------- */
 	/* invoke cordscript expression */
 	/* ---------------------------- */
 	if (( xptr ) && ( check_debug() ))
 	{
-		printf("invoke cordscript:(%s)\n",xptr);
+		printf("!!!!!!!!!!!!!!!!!!!!!! invoke cordscript:(%s)\n",xptr);
 	}
 	if (!( eptr = cordscript_parse_statement( xptr ) ))
 		return(0);
@@ -2412,12 +2424,15 @@ private	int	cords_parser_atribut_action(
 			fptr != (struct cordscript_action *) 0;
 			fptr = fptr->next )
 		{
+		  printf("!!!!!!! switch on type='%d'", fptr->type);
 			switch ( fptr->type )
 			{
 			case	_CORDSCRIPT_NEW	:
+			  printf("case _CORDSCRIPT_NEW\n");
 				cords_new_cordscript_instance( aptr, wptr, dptr, fptr, agent, tls );
 				continue;
 			case	_CORDSCRIPT_RESOLVE	:
+			        printf("case _CORDSCRIPT_RESOLVE\n");
 				cords_resolve_cordscript_instance( aptr, wptr, dptr, fptr, agent, tls );
 				continue;
 			case	_CORDSCRIPT_START	:
@@ -2426,11 +2441,13 @@ private	int	cords_parser_atribut_action(
 			case	_CORDSCRIPT_SNAPSHOT	:
 			case	_CORDSCRIPT_DELETE	:
 			case	_CORDSCRIPT_BUILD	:
+			  printf("case others\n");
 				cords_invoke_cordscript_action( aptr, wptr, dptr, fptr, agent, tls );
 				continue;
 			}
 		}
 		eptr =  liberate_cordscript_actions( eptr );
+		printf("cords_parser_atribut_action return\n");
 		return(status);
 	}
 }
@@ -2524,6 +2541,8 @@ private	int	cords_terminate_xsd(
 	int	linked=0;
 	int	count=0;
 
+	printf("cords_terminate_xsd - start : \n");
+
 	/* --------------------------------- */
 	/* filter out ERROR, DESCRIPTION etc */
 	/* --------------------------------- */
@@ -2554,6 +2573,8 @@ private	int	cords_terminate_xsd(
 		}
 	}
 
+	printf("cords_terminate_xsd - xsd_builder='%p'\n", xsd_builder);
+
 	/* ---------------------------------------------------------- */
 	/* if not local xsd controlled build then do hard wired build */
 	/* ---------------------------------------------------------- */
@@ -2561,6 +2582,8 @@ private	int	cords_terminate_xsd(
 		return( cords_terminate_level( dptr, agent, tls ) );		
 	else
 	{
+		printf("cords_terminate_xsd - link up ...\n");
+		
 		/* ------------------------------------------------- */
 		/* link up the single elements to their attribute ID */
 		/* ------------------------------------------------- */
@@ -2585,6 +2608,8 @@ private	int	cords_terminate_xsd(
 			}
 			else	return( status );
 		}
+		
+		printf("cords_terminate_xsd - ensure the ...\n");
 
 		/* ---------------------------------------------------- */
 		/* ensure the presence of required minOccurs=1 elements */
@@ -2624,6 +2649,8 @@ private	int	cords_terminate_xsd(
 			if ( nptr )
 				nptr = liberate( nptr );
 		}
+
+		printf("cords_terminate_xsd - locate the ...\n");
 
 		/* ------------------------------------- */
 		/* locate the first max occurs unbounded */
@@ -2676,7 +2703,8 @@ private	int	cords_terminate_xsd(
 			}
 		}
 
-		
+		printf("cords_terminate_xsd - ensure existance\n");
+
 		/* ----------------------------------------- */
 		/* ensure existance of an ID attribute value */
 		/* ----------------------------------------- */
@@ -2684,6 +2712,8 @@ private	int	cords_terminate_xsd(
 			return(cords_append_error(dptr,701,"unresolved element"));
 		else
 		{
+			printf("cords_terminate_xsd - recover default\n");
+
 			/* -------------------------------- */
 			/* recover default attribute values */
 			/* -------------------------------- */
@@ -2700,22 +2730,28 @@ private	int	cords_terminate_xsd(
 				}
 			}
 
+			printf("cords_terminate_xsd - detect and ...\n");
+
 			/* ------------------------------------- */
 			/* detect and perform cordscript actions */
 			/* ------------------------------------- */
 			modifications = cords_parser_xsd_actions( wptr, dptr, agent, tls );
-			
+			printf("cords_terminate_xsd - modifications='%d'\n", modifications);
+
 			if (!( modifications ))
 				return( 0 );
-			else if (!( zptr = cords_update_category( dptr, aptr->value, agent,tls ) ))
+			else if (!( zptr = cords_update_category( dptr, aptr->value, agent,tls ) )) {
+				printf("cords_terminate_xsd -cords_update_category failed\n");
 				return(cords_append_error(dptr,704,"updating category"));
-			else
+			} else
 			{
+				printf("cords_terminate_xsd - end 2\n");	
 				occi_remove_response( zptr );
 				return(0);
 			}
 		}
 	}
+	printf("cords_terminate_xsd - end 1\n");
 }
 
 /*	---------------------------------	*/
@@ -3053,8 +3089,12 @@ public	int 	cords_parse_element(
 	if (!( xst ))
 		status = ll_cords_parse_element( domain, xst, document, agent, tls, level );
 
-	else if (!( xst = xsd_element( xst, document->name ) ))
-		status = cords_append_error(document,798,"xsd:incorrect element");
+	else if (!( xst = xsd_element( xst, document->name ) )) {
+		char *tmp;
+		asprintf(&tmp, "xsd:incorrect element '%s'", document->name);
+		status = cords_append_error(document,798,tmp);
+		free(tmp);
+	}
 
 	else	status = ll_cords_parse_element( domain, xst, document, agent, tls, level );
 
@@ -3090,13 +3130,13 @@ public	struct	xml_element * cords_document_parser(
 	if ( check_verbose() )
 		printf("   CORDS Request Parser Phase 1\n");
 
-	if (!( document = document_parse_file( filename ) ))
+	if (!( document = document_parse_file( filename ) )) {
+	  printf("   CORDS Request Parser Phase 1 : cannot parse document '%s'\n", filename);
 		return(document);
-
-	else if (!( xsd = document_load_xsd( document ) ))
+	} else if (!( xsd = document_load_xsd( document ) )) {
+	        printf("   CORDS Request Parser Phase 1 : cannot load xsd\n");
 		return(document);
-
-	else
+	} else
 	{
 		if ( check_verbose() )
 			printf("   CORDS Request Parser Phase 2\n");
@@ -3104,13 +3144,16 @@ public	struct	xml_element * cords_document_parser(
 		if ( usexsd )
 			cords_document_xsd((xst = xsd));
 		else	cords_document_xsd((xst = (struct xml_element *) 0));
-
+		printf("   CORDS Request Parser Phase 2 : init occi resolver\n");
 		initialise_occi_resolver( host, (char *) 0, (char *) 0, (char *) 0 );
 
+		printf("   CORDS Request Parser Phase 2 : parse element\n");
 		(void) cords_parse_element( (char *) 0,xst, document, agent, tls, 0 );
 
 		xsd = cords_drop_document( xsd );
+		printf("   CORDS Request Parser Phase 2 : cords document xsd\n");
 		cords_document_xsd( xsd );
+		printf("   CORDS Request Parser Phase 2 : return\n");
 		return( document );
 
 	}
