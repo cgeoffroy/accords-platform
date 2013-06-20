@@ -205,6 +205,8 @@ _co-status() {
 co-stop() {
     killall example
     sleep $tempo
+    killall swiftprocci
+    sleep $tempo
     killall coobjectstorage
     sleep $tempo
     killall jpaasprocci
@@ -338,6 +340,10 @@ _run-jpaasprocci() {
 
 _run-example() {
     @bindir@/example --config $target CO-EXAMPLE/1.0
+}
+
+_run-swiftprocci() {
+    @bindir@/swiftprocci --config $target CO-SWIFTPROCCI/1.0
 }
 
 _run-coobjectstorage() {

@@ -163,6 +163,7 @@ _co_platform() {
     _co_run_serv coips "accords image production services"
     _co_run_serv slam "accords sla services"
     _co_run_serv copaas "accords paas services"
+    _co_run_serv swiftprocci "accords swiftprocci services"
     _co_run_serv coobjectstorage "accords coobjectstorage services"
     _co_run_serv coeasy "accords easiclouds services"
     _co_run_serv conagios "accords nagios services"
@@ -354,7 +355,7 @@ _co_status() {
     echo " Accords Platform Components "
     echo "-----------------------------"
     if [ "$(uname -s)" = 'Linux' ] ; then
-	netstat -a -p -n | grep LISTEN | egrep '(publisher|fileserver|coss|comons|conets|coobas|cops|coees|parser|broker|procci|cosched|ezvm|coips|cosacs|conagios|slam|copaas|coeasy|coobjectstorage)'
+	netstat -a -p -n | grep LISTEN | egrep '(publisher|fileserver|coss|comons|conets|coobas|cops|coees|parser|broker|procci|cosched|ezvm|coips|cosacs|conagios|slam|copaas|coeasy|swiftprocci|coobjectstorage)'
     elif [ "$(uname -s)" = 'Darwin' ] ; then
 	lsof -i | grep LISTEN | grep publisher || true
 	lsof -i | grep LISTEN | grep fileserver || true
@@ -375,6 +376,7 @@ _co_status() {
 	lsof -i | grep LISTEN | grep slam || true
 	lsof -i | grep LISTEN | grep copaas || true
 	lsof -i | grep LISTEN | grep coeasy || true
+	lsof -i | grep LISTEN | grep swiftprocci || true
 	lsof -i | grep LISTEN | grep coobjectstorage || true
     else
 	echo "Unsupported OS ($(uname -s))"
@@ -414,6 +416,7 @@ _co_stop() {
     _stop_service coss
     _stop_service fileserver
     _stop_service publisher
+    _stop_service swiftprocci
     _stop_service coobjectstorage
 }
 
@@ -502,6 +505,10 @@ _run_copaas() {
     copaas --config $target CO-PAAS/1.0
 }
 
+_run_swiftprocci() {
+    swiftprocci --config $target CO-SWIFTPROCCI/1.0
+}
+
 _run_coobjectstorage() {
     coobjectstorage --config $target CO-COOBJECTSTORAGE/1.0
 }
@@ -581,6 +588,7 @@ _make_security_files() {
 	_mksecs oaprocci 1
 	_mksecs slam 1
 	_mksecs copaas 1
+	_mksecs swiftprocci 1
 	_mksecs coobjectstorage 1
 	_mksecs coeasy 1
 	_mksecs conagios 1
@@ -670,6 +678,7 @@ _accords_config() {
 		_mkcert oaprocci
 		_mkcert slam
 		_mkcert copaas
+		_mkcert swiftprocci
 		_mkcert coobjectstorage
 		_mkcert coeasy
 		_mkcert conagios
@@ -723,6 +732,7 @@ _accords_config() {
     _mkcfg cosched
     _mkcfg slam
     _mkcfg copaas
+    _mkcfg swiftprocci
     _mkcfg coobjectstorage
     _mkcfg coeasy
     _mkcfg conagios
@@ -1198,6 +1208,9 @@ case `basename $0` in
 	;;
     run-copaas)
 	_run_copaas $*
+	;;
+    run-swiftprocci)
+	_run_swiftprocci $*
 	;;
     run-coobjectstorage)
 	_run_coobjectstorage $*

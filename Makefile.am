@@ -189,6 +189,9 @@ endif
 if ENABLE_PYACCORDS
 SUBDIRS += pyaccords pyaccordsSDK
 endif
+if ENABLE_SWIFTPROCCI
+SUBDIRS += swiftprocci
+endif
 if ENABLE_COOBJECTSTORAGE
 SUBDIRS += coobjectstorage
 endif

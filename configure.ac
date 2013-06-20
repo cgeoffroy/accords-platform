@@ -464,6 +464,16 @@ AC_ARG_ENABLE([paprocci],
 AM_CONDITIONAL([ENABLE_PAPROCCI], [test "$enable_paprocci" = "yes"])
 
 
+AC_ARG_ENABLE([swiftprocci],
+      [AS_HELP_STRING([--disable-swiftprocci],
+		      [Disable swiftprocci @<:@default=enable@:>@])],
+      [],
+      [enable_swiftprocci=yes])
+AM_CONDITIONAL([ENABLE_SWIFTPROCCI], [test "$enable_swiftprocci" = "yes"])
+AC_SUBST([CFLAGS_SWIFTPROCCI], [-I\${abs_top_srcdir}/swiftprocci])
+AC_SUBST([PATH_SWIFTPROCCI], [${abs_top_srcdir}/swiftprocci])
+
+
 AC_ARG_ENABLE([coobjectstorage],
       [AS_HELP_STRING([--disable-coobjectstorage],
 		      [Disable coobjectstorage @<:@default=enable@:>@])],
@@ -700,6 +710,7 @@ AC_CONFIG_FILES([testresolver/Makefile])
 AC_CONFIG_FILES([testsuite/Makefile testsuite/basic/Makefile testsuite/platform/Makefile])
 AC_CONFIG_FILES([pyaccords/Makefile pyaccords/pysrc/Makefile pyaccords/pysrc/pypacksrc/Makefile])
 AC_CONFIG_FILES([pyaccordsSDK/Makefile pyaccordsSDK/pycompdev/Makefile pyaccordsSDK/pycompmanager/Makefile])
+AC_CONFIG_FILES([swiftprocci/Makefile])
 AC_CONFIG_FILES([coobjectstorage/Makefile])
 
 dnl write all stuff
@@ -772,6 +783,7 @@ echo "    - fileserver               : $enable_fileserver"
 echo "    - testresolver             : $enable_testresolver"
 echo "    - testsuite                : $enable_testsuite"
 echo "    - pyaccords                : $enable_pyaccords"
+echo "    - swiftprocci              : $enable_swiftprocci"
 echo "    - coobjectstorage          : $enable_coobjectstorage"
 echo ""
 
