@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <xsd:complexType name="objectStorageManifest">
+    <xsd:sequence>
+      <xsd:element name="description" type="xsd:string"
+		   minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="bucket" type="bucketBucket"
+		   minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:string"/>
+    <xsd:attribute name="name" use="required" type="xsd:string"/>
+    <xsd:attribute name="state" type="xsd:integer"/>
+    <xsd:attribute name="plan" 
+		   type="xsd:string"
+		   default="cordscript: voiture;" />
+  </xsd:complexType>
+
+  <xsd:complexType name="bucketBucket">
+    <xsd:attribute name="id" type="xsd:string"/>
+    <xsd:attribute name="name" use="required" type="xsd:string"/>
+    <xsd:attribute name="state" type="xsd:integer"/>
+  </xsd:complexType>
+
+</xsd:schema>
