@@ -205,6 +205,8 @@ _co-status() {
 co-stop() {
     killall example
     sleep $tempo
+    killall coobjectstorage
+    sleep $tempo
     killall jpaasprocci
     sleep $tempo
     killall copaas
@@ -336,6 +338,10 @@ _run-jpaasprocci() {
 
 _run-example() {
     @bindir@/example --config $target CO-EXAMPLE/1.0
+}
+
+_run-coobjectstorage() {
+    @bindir@/coobjectstorage --config $target CO-COOBJECTSTORAGE/1.0
 }
 
 _run-parser() {

@@ -463,6 +463,17 @@ AC_ARG_ENABLE([paprocci],
       [enable_paprocci=no;paprocci_jdk=jdk_not_used])
 AM_CONDITIONAL([ENABLE_PAPROCCI], [test "$enable_paprocci" = "yes"])
 
+
+AC_ARG_ENABLE([coobjectstorage],
+      [AS_HELP_STRING([--disable-coobjectstorage],
+		      [Disable coobjectstorage @<:@default=enable@:>@])],
+      [],
+      [enable_coobjectstorage=yes])
+AM_CONDITIONAL([ENABLE_COOBJECTSTORAGE], [test "$enable_coobjectstorage" = "yes"])
+AC_SUBST([CFLAGS_COOBJECTSTORAGE], [-I\${abs_top_srcdir}/coobjectstorage])
+AC_SUBST([PATH_COOBJECTSTORAGE], [${abs_top_srcdir}/coobjectstorage])
+
+
 if test "x$enable_paprocci" = "xyes"; then
       case $target_cpu in
            x86_64) JVM_ARCH=amd64 ;;
@@ -680,6 +691,7 @@ AC_CONFIG_FILES([testresolver/Makefile])
 AC_CONFIG_FILES([testsuite/Makefile testsuite/basic/Makefile testsuite/platform/Makefile])
 AC_CONFIG_FILES([pyaccords/Makefile pyaccords/pysrc/Makefile pyaccords/pysrc/pypacksrc/Makefile])
 AC_CONFIG_FILES([pyaccordsSDK/Makefile pyaccordsSDK/pycompdev/Makefile pyaccordsSDK/pycompmanager/Makefile])
+AC_CONFIG_FILES([coobjectstorage/Makefile])
 
 dnl write all stuff
 AC_OUTPUT
@@ -750,5 +762,6 @@ echo "    - fileserver               : $enable_fileserver"
 echo "    - testresolver             : $enable_testresolver"
 echo "    - testsuite                : $enable_testsuite"
 echo "    - pyaccords                : $enable_pyaccords"
+echo "    - coobjectstorage          : $enable_coobjectstorage"
 echo ""
 

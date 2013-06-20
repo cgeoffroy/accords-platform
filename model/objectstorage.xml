@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema version='0.0.1'>
+  <model name='objectstorage' description='generic bucket and blob storage' version='0.0.1' >
+    <category term='objectstorage_manifest'
+	      scheme='http://scheme.compatibleone.fr/scheme/compatible#'
+	      class='kind' location='/objectstorage_manifest/'
+	      rel='http://schemas.ogf.org/occi/core#resource'
+	      structname='objectstorage_manifest'
+	      headerfilename='objectstorage_manifest.h' >
+      <attributes>
+	<attribute name='name' type='string' required='true' immutable='true'/>
+	<attribute name='state' type='int' required='false' immutable='false'/>
+
+	 <instance name='bucket' category='http://scheme.compatibleone.fr/scheme/compatible#bucket' multiplicity='[0..1]'/>
+
+	<!-- <collection name='buckets' category='http://scheme.compatibleone.fr/scheme/compatible#bucket' multiplicity='[0..*]'/> -->
+      </attributes>
+
+    </category>
+
+    <category term='bucket' scheme='http://scheme.compatibleone.fr/scheme/compatible#'
+	      class='kind' location='/bucket/'
+	      rel='http://schemas.ogf.org/occi/core#resource'
+	      structname='bucket' headerfilename='bucket.h' >
+      <attributes>
+	<attribute name='name' type='string' required='true' immutable='true'/>
+	<attribute name='state' type='int' required='false' immutable='false'/>
+
+	<!--<collection name='blobs' category='http://scheme.compatibleone.fr/scheme/compatible#blob' multiplicity='[0..*]'/>-->
+      </attributes>
+
+    </category>
+
+    <!--<category term='blob' scheme='http://scheme.compatibleone.fr/scheme/compatible#' class='kind' location='/blob/'
+	      rel='http://schemas.ogf.org/occi/core#resource' structname='blob' headerfilename='blob.h' >
+      <attributes>
+	<attribute name='contentlength' type='string' required='true' immutable='true'/>
+	<attribute name='contenttype' type='string' required='true' immutable='true'/>
+      </attributes>
+
+    </category>-->
+  </model>
+</schema>
