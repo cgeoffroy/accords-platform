@@ -183,6 +183,9 @@ endif
 if ENABLE_TESTDC
 SUBDIRS += testdc
 endif
+if ENABLE_TESTSWIFT
+SUBDIRS += testswift
+endif
 if ENABLE_PYACCORDS
 SUBDIRS += pyaccords pyaccordsSDK
 endif

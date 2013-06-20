@@ -556,6 +556,14 @@ AC_ARG_ENABLE([testdc],
 AM_CONDITIONAL([ENABLE_TESTDC], [test "$enable_testdc" = "yes"])
 AC_SUBST([CFLAGS_TESTDC], [-I\${abs_top_srcdir}/testdc])
 
+AC_ARG_ENABLE([testswift],
+      [AS_HELP_STRING([--disable-testswift],
+		      [Disable testswift @<:@default=enable@:>@])],
+      [],
+      [enable_testswift=yes])
+AM_CONDITIONAL([ENABLE_TESTSWIFT], [test "$enable_testswift" = "yes"])
+AC_SUBST([CFLAGS_TESTSWIFT], [-I\${abs_top_srcdir}/testswift])
+
 AC_ARG_ENABLE([teston],
       [AS_HELP_STRING([--disable-teston],
 		      [Disable teston @<:@default=enable@:>@])],
@@ -679,6 +687,7 @@ AC_CONFIG_FILES([dcprocci/Makefile])
 AC_CONFIG_FILES([paprocci/Makefile paprocci/src/Makefile paprocci/java/Makefile])
 AC_CONFIG_FILES([command/Makefile])
 AC_CONFIG_FILES([testdc/Makefile])
+AC_CONFIG_FILES([testswift/Makefile])
 AC_CONFIG_FILES([testos/Makefile])
 AC_CONFIG_FILES([teston/Makefile])
 AC_CONFIG_FILES([testhdfs/Makefile])
@@ -752,6 +761,7 @@ echo "    - JDK used                 : $paprocci_jdk"
 echo "    - command                  : $enable_command"
 echo "    - testos                   : $enable_testos"
 echo "    - testdc                   : $enable_testdc"
+echo "    - testswift                : $enable_testswift"
 echo "    - teston                   : $enable_teston"
 echo "    - testhdfs                 : $enable_testhdfs"
 echo "    - testcp                   : $enable_testcp"
