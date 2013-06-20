@@ -195,6 +195,8 @@
 #define	_CORDS_REFERENCE	"reference"
 #define	_CORDS_CATEGORY		"category"
 
+#define	_CORDS_SWIFT            "swift"
+
 	/* ----------------- */
 #endif	/* _cords_language_h */
 	/* ----------------- */

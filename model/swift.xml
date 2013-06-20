@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema version='0.1.0'>
+<model name='swift' description='' version='0.1.0'>
+    <!-- categories from service at port 8095 -->
+	<!-- Swift -->
+	<category term='swift' scheme='http://scheme.compatibleone.fr/scheme/compatible#' class='kind' 
+		  location='/swift/' rel='http://schemas.ogf.org/occi/core#resource' structname='swift'>
+	    <attributes>
+	        <attribute name='name' type='string' required='false' immutable='false'/>
+		<attribute name='state' type='int' required='false' immutable='false'/>
+
+		<attribute name='node' type='string' required='false' immutable='false'/>
+	        <attribute name='price' type='string' required='false' immutable='false'/>
+	        <attribute name='account' type='string' required='false' immutable='false'/>
+		<attribute name='profile' type='string' required='false' immutable='false'/>
+
+		 <attribute name='when' type='int' required='false' immutable='false'/>
+	    </attributes>
+	    <actions>
+	        <action id='http://scheme.compatibleone.fr/scheme/compatible#DELETE'/>
+	        <action id='http://scheme.compatibleone.fr/scheme/compatible#start'/>
+	    </actions>
+	</category>
+
+	<category term='swift_configuration' scheme='http://scheme.compatibleone.fr/scheme/compatible#' class='kind'
+		  location='/swift_configuration/' rel='http://schemas.ogf.org/occi/core#resource' structname='swift_config' headerfilename='swiftconfig.h'>
+	    <attributes>
+	        <attribute name='name' type='string' required='false' immutable='false'/>
+		<attribute name='description' type='string' required='false' immutable='false'/>
+		
+		<attribute name='user' type='string' required='false' immutable='false'/>
+	        <attribute name='password' type='string' required='false' immutable='false'/>
+		<attribute name='auth_url' type='string' required='false' immutable='false'/>
+		<attribute name='auth_version' type='string' required='false' immutable='false'/>
+		<attribute name='tenant_name' type='string' required='false' immutable='false'/>
+
+		<attribute name='current' type='int' required='false' immutable='false'/>
+	    </attributes>
+	    <actions>
+	        <action id='http://scheme.compatibleone.fr/scheme/compatible#DELETE'/>
+	        <action id='http://scheme.compatibleone.fr/scheme/compatible#current'/>
+	    </actions>
+	</category>
+
+</model>
+</schema>
