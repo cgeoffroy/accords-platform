@@ -623,6 +623,19 @@ void	generate_occi_rest_builder( FILE * h, char * nptr )
 		0x0022,0x0022);
 	fprintf(h,"\telse reqport = rptr->port;\n");
 
+	fprintf(h,"\tchar * saved = allocate_string(reqhost);\n");
+	fprintf(h,"\tint n = strlen(saved);\n");
+	fprintf(h,"\twhile(n != 0) {\n");
+	fprintf(h,"\t\tn--;\n");
+	fprintf(h,"\t\tif (':' == saved[n]) {\n");
+	fprintf(h,"\t\t\tsaved[n] = '\\0';\n");
+	fprintf(h,"\t\t\tbreak;\n");
+	fprintf(h,"\t\t}\n");
+	fprintf(h,"\t}\n");
+	fprintf(h,"\tif ( strcasecmp(%chttp%c, saved) )\n", 0x0022, 0x0022);
+	fprintf(h,"\t\treqhost = allocate_string(saved);\n");
+	fprintf(h,"\tliberate(saved);\n");
+
 	fprintf(h,"\tif (!( nptr = add_%s_node(1)))\n",C.name);
 	fprintf(h,"\t\treturn( rest_html_response( aptr, 500, %cServer Failure%c) );\n",0x0022,0x0022);
 	fprintf(h,"\telse if (!( pptr = nptr->contents ))\n");
@@ -737,6 +750,20 @@ void	generate_occi_rest_builder( FILE * h, char * nptr )
 	fprintf(h,"\t\treturn( rest_html_response( aptr, 400, %cBad Request%c ) );\n",
 		0x0022,0x0022);
 	fprintf(h,"\telse reqport = rptr->port;\n");
+
+	fprintf(h,"\tchar * saved = allocate_string(reqhost);\n");
+	fprintf(h,"\tint n = strlen(saved);\n");
+	fprintf(h,"\twhile(n != 0) {\n");
+	fprintf(h,"\t\tn--;\n");
+	fprintf(h,"\t\tif (':' == saved[n]) {\n");
+	fprintf(h,"\t\t\tsaved[n] = '\\0';\n");
+	fprintf(h,"\t\t\tbreak;\n");
+	fprintf(h,"\t\t}\n");
+	fprintf(h,"\t}\n");
+	fprintf(h,"\tif ( strcasecmp(%chttp%c, saved) )\n", 0x0022, 0x0022);
+	fprintf(h,"\t\treqhost = allocate_string(saved);\n");
+	fprintf(h,"\tliberate(saved);\n");
+
 	fprintf(h,"\tif (!( fptr = filter_%s_info( optr, rptr, aptr ) ))\n",C.name);
 	fprintf(h,"\t\treturn( rest_html_response( aptr, 400, %cBad Request%c ) );\n",
 		0x0022,0x0022);
