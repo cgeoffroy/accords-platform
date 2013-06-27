@@ -1366,6 +1366,7 @@ private	struct rest_request *	rest_consume_head(
 		struct rest_request * rptr)
 {
 	char	*	nptr;
+	char    *       values, * tmp, * subvalue;
 	struct	rest_header * hptr;
 	while (1)
 	{
@@ -1386,17 +1387,31 @@ private	struct rest_request *	rest_consume_head(
 		default		:
 			if (!(nptr = rest_consume_token(cptr,':')))
 				break;
-			else if (!( hptr = add_rest_header( rptr ) ))
-				break;
-			else if (!( hptr->value = rest_consume_value( cptr ) ))
-			{
-				drop_rest_header( hptr );
+			else if (!( values = rest_consume_value( cptr ) )) {
 				liberate( nptr );
 				break;
 			}
-			else	hptr->name = nptr;
-			if ( rest_check_debug() )
-				printf("%s: %s\n",hptr->name,hptr->value);
+			/* TODO BUG : this parsing loop must detect and ignore the ',' that can appear in the quoted field-value */
+			for (tmp = values; ; tmp = NULL) {
+				subvalue = strtok(tmp, ",");
+				if (subvalue == NULL)
+					break;
+				hptr = NULL;
+				if (!( hptr = add_rest_header( rptr ) )) {
+					break;
+				}
+				hptr->name = allocate_string(nptr);
+				hptr->value = allocate_string(subvalue);
+				if ( rest_check_debug() )
+					printf("parsed header field - %s: %s\n",hptr->name,hptr->value);
+			}
+			liberate(nptr);
+			liberate(values);
+			
+			if (! hptr ) {
+				break;
+			}
+
 			continue;
 		}
 		break;
